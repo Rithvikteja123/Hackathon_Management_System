@@ -1,22 +1,27 @@
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
-  const primaryUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/hacklytics";
-  const localFallbackUri = "mongodb://127.0.0.1:27017/hacklytics";
+  const primaryUri = process.env.MONGO_URI;
+  
+  if (process.env.NODE_ENV === "production" && !primaryUri) {
+    throw new Error("MONGO_URI environment variable is missing in production Vercel environment!");
+  }
 
-  try {
-    const conn = await mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 5000 });
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`⚠️ Primary MongoDB Connection Failed: ${error.message}`);
-    if (primaryUri !== localFallbackUri) {
-      console.log(`🔄 Falling back to local MongoDB...`);
-      try {
-        const localConn = await mongoose.connect(localFallbackUri, { serverSelectionTimeoutMS: 3000 });
-        console.log(`✅ Local MongoDB Connected: ${localConn.connection.host}`);
-      } catch (localErr) {
-        console.error(`❌ Local MongoDB Fallback Failed: ${localErr.message}`);
-      }
+  const uri = primaryUri || "mongodb://127.0.0.1:27017/hacklytics";
+
+  if (process.env.NODE_ENV === "production") {
+    // Serverless production deployment
+    await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+    console.log("✅ Production MongoDB Connected successfully");
+  } else {
+    // Local development failover
+    try {
+      await mongoose.connect(uri, { serverSelectionTimeoutMS: 3000 });
+      console.log("✅ MongoDB Connected");
+    } catch (error) {
+      console.error(`⚠️ Primary connection failed: ${error.message}. Falling back to local DB...`);
+      await mongoose.connect("mongodb://127.0.0.1:27017/hacklytics", { serverSelectionTimeoutMS: 3000 });
+      console.log("✅ Local MongoDB Connected");
     }
   }
 };
