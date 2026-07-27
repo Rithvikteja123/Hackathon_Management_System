@@ -1,8 +1,6 @@
+# ◈ CoBuild — Complete & Comprehensive Technical Overview
 
-
-# ◈ CoBuild  — Complete & Comprehensive Technical Overview
-
-**CoBuild**  is a production-level, multi-role SaaS Hackathon Management Platform built on the MERN stack (MongoDB, Express.js, React 18, Node.js). 
+**CoBuild** is a production-level, multi-role SaaS Hackathon Management Platform built on the MERN stack (MongoDB, Express.js, React 18, Node.js). 
 
 It replaces fragmented third-party tools (Google Forms, WhatsApp/Telegram groups, Excel sheets, Google Drive, and Discord servers) with a unified, high-contrast monochrome digital workspace for **Participants**, **Organizers**, **Judges**, and **Platform Administrators**.
 
@@ -238,5 +236,4 @@ npm run dev
 npm run dev:client
 
 # Production Build Verification
-cd client && npm run build
 ```
