@@ -1,138 +1,242 @@
-# Hacklytics — Hackathon Management Platform (MERN Stack)
 
-Hacklytics is a production-level, SaaS-grade Hackathon Management Platform built on the MERN stack (MongoDB, Express.js, React 18, Node.js). It replaces fragmented tools (Google Forms, WhatsApp, Email, Excel, Drive) with a centralized platform for organizing, managing, participating in, and judging hackathons.
 
----
+# ◈ CoBuild  — Complete & Comprehensive Technical Overview
 
-## 🌟 Key Features & Role-Based Workflows
+**CoBuild**  is a production-level, multi-role SaaS Hackathon Management Platform built on the MERN stack (MongoDB, Express.js, React 18, Node.js). 
 
-### 🔐 1. Authentication & Authorization
-- **JWT & HTTP-Only Cookies**: Secure authentication flow.
-- **Role Enforcement**: 4 distinct roles (`admin`, `organizer`, `participant`, `judge`).
-- **Route Protection**: Backend `authMiddleware` + `roleMiddleware` guards; frontend `ProtectedRoute`.
-
-### 🛡️ 2. Administrator Panel (`/admin`)
-- **Platform Analytics**: Total users, hackathons, teams, and submissions visualized with Recharts.
-- **User Management**: Search, filter by role, block/unblock accounts, delete users.
-- **Hackathon Management**: Full oversight to view and remove any hackathon on the platform.
-
-### 🎪 3. Organizer Suite (`/organizer`)
-- **Hackathon Studio**: 3-step wizard to create/edit hackathons with banner image uploads, rules builder, and customizable judging criteria (with maximum points).
-- **Registration Control**: Toggle registration open/closed, approve or reject team applications with reason strings and automated email alerts.
-- **Judge Assignment**: Assign certified judges to hackathons by user reference.
-- **Results & Winners**: Publish final rankings and announce winner positions.
-
-### 🚀 4. Participant Workspace (`/participant`)
-- **Hackathon Discovery**: Public directory with search, mode filters (Online/Offline/Hybrid), and status tags.
-- **Team Management**: Create teams, invite members by user ID, respond to invitations, transfer team leadership, or leave teams.
-- **Project Submission**: Multi-field submission including project name, problem statement, solution description, tech stack tags, GitHub repository, live demo link, video link, and Cloudinary media uploads.
-
-### ⚖️ 5. Judge Suite (`/judge`)
-- **Assigned Submissions**: Overview of pending vs. completed project reviews.
-- **Scoring Interface**: Real-time per-criterion scoring sliders with progress bars and written feedback notes.
-
-### 🏆 6. Live Leaderboard (`/leaderboard`)
-- **Aggregated Rankings**: MongoDB aggregation pipeline computing average score per submission across all evaluating judges, with medal badges and rank positions.
+It replaces fragmented third-party tools (Google Forms, WhatsApp/Telegram groups, Excel sheets, Google Drive, and Discord servers) with a unified, high-contrast monochrome digital workspace for **Participants**, **Organizers**, **Judges**, and **Platform Administrators**.
 
 ---
 
-## 🛠️ Technology Stack
+## 🌟 1. Executive Summary & Value Proposition
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | React 18, Vite, React Router DOM v6, Tailwind CSS v4, Framer Motion, Axios, React Hook Form, Zod, Recharts, React Icons, React Hot Toast |
-| **Backend** | Node.js, Express.js, Mongoose ODM |
-| **Database** | MongoDB with Schema Indexing & Aggregations |
-| **Media & File Storage** | Multer + Cloudinary (Banners, Avatars, Screenshots, PDFs) |
-| **Email Notifications** | Nodemailer |
+Traditional hackathon management is fragmented:
+- **Organizers** track team registrations in spreadsheets and distribute submission links via emails.
+- **Participants** struggle with team formation, finding teammates, and submitting project links across multiple forms.
+- **Judges** score projects in manual Google Sheets or paper rubrics, leading to delays and scoring discrepancies.
+- **Admins** lack global analytics and system-wide visibility.
+
+**CoBuild** solves this by providing:
+- **End-to-End Workflow Integration**: From hackathon creation, team formation, application approvals, project submissions, and judge scoring to real-time leaderboard aggregation and winner announcements.
+- **Role-Based Workflows**: Tailored user interfaces for `admin`, `organizer`, `participant`, and `judge`.
+- **Global Group Chat**: Real-time public discussion forum with role badges and team identification.
+- **Monochrome SaaS Design System**: Sharp-edged, high-contrast, light-mode interface with zero visual fluff and smooth responsiveness.
 
 ---
 
-## 📁 Directory Structure
+## 🛠️ 2. Technology Stack Architecture
+
+### **Frontend Architecture**
+- **Framework**: React 18 powered by Vite for instant hot-module reloading.
+- **Routing**: React Router DOM with `ProtectedRoute` guards verifying JWT tokens and role authorizations.
+- **Styling**: Tailwind CSS v4 with a custom monochrome design system (`index.css`) featuring sharp borders (`border-radius: 0`), bold offset drop-shadows (`box-shadow: 3px 3px 0px #000`), and curated HSL color tokens.
+- **Animations**: Framer Motion for page transitions, tab switches, and modal/drawer slide-ins.
+- **Form Management & Validation**: React Hook Form coupled with Zod schema validation.
+- **Data Visualization**: Recharts for platform statistics and analytics bar charts.
+- **API Client**: Axios instance with request/response interceptors attached to `localStorage` Bearer tokens.
+- **Notifications**: React Hot Toast for non-intrusive feedback toasts.
+
+### **Backend Architecture**
+- **Runtime**: Node.js with Express.js REST API.
+- **Database & ODM**: MongoDB Atlas with local MongoDB fallback (`mongodb://127.0.0.1:27017/hacklytics`) via Mongoose ODM.
+- **Authentication & Security**:
+  - `jsonwebtoken` (JWT) with HTTP-only cookie support.
+  - Password hashing with `bcryptjs`.
+  - Role-based middleware (`authMiddleware.js` and `roleMiddleware.js`).
+  - Dynamic CORS header resolution allowing multi-origin local development (`http://localhost:5173`, `http://localhost:5174`, `127.0.0.1`).
+- **File Storage**: Multer + Cloudinary storage engine (`multer-storage-cloudinary`) for banner images, user avatars, screenshots, and PDF submissions.
+- **Email Service**: Nodemailer for automated email notifications (approval/rejection alerts).
+
+---
+
+## 👥 3. Detailed Role-Based Workflows & Modules
 
 ```
-Hacklytics/
-├── client/                     # React + Vite Frontend
-│   ├── src/
-│   │   ├── components/         # Common UI, Layout (Navbar, Sidebar, DashboardLayout)
-│   │   ├── context/            # AuthContext
-│   │   ├── pages/              # Public, Admin, Organizer, Participant, Judge pages
-│   │   ├── services/           # Axios instance & API service methods
-│   │   ├── App.jsx             # React Router routing setup
-│   │   ├── index.css           # SaaS Dark Design System & Tailwind v4
-│   │   └── main.jsx
-│   ├── index.html
-│   └── vite.config.js
-│
-├── server/                     # Express REST API
-│   ├── config/                 # Database (Mongoose) & Cloudinary setup
-│   ├── controllers/            # Auth, User, Hackathon, Team, Registration, Submission, Review, Leaderboard
-│   ├── middleware/             # Auth, Role, ErrorHandler, Upload (Multer)
-│   ├── models/                 # Mongoose schemas (User, Hackathon, Team, Registration, Submission, Review)
-│   ├── routes/                 # Express router declarations
-│   ├── utils/                  # ApiError, ApiResponse, generateToken, sendEmail
-│   ├── app.js
-│   ├── server.js
-│   └── .env.example
-│
-└── package.json                # Monorepo scripts
+                              ┌────────────────────────┐
+                              │  CoBuild Platform      │
+                              └───────────┬────────────┘
+                                          │
+    ┌──────────────────┬──────────────────┼──────────────────┬──────────────────┐
+    ▼                  ▼                  ▼                  ▼                  ▼
+┌────────┐       ┌───────────┐     ┌─────────────┐       ┌───────┐      ┌───────────────┐
+│ Public │       │ Admin     │     │ Organizer   │       │ Judge │      │ Participant   │
+│ Module │       │ Suite     │     │ Studio      │       │ Suite │      │ Workspace     │
+└────────┘       └───────────┘     └─────────────┘       └───────┘      └───────────────┘
 ```
+
+### 🔐 A. Authentication & User System (`/login`, `/signup`, `/profile`)
+- **JWT Authentication**: Users authenticate with email/password to receive a signed JWT token.
+- **Role Selection**: During registration, users choose their default role (`participant`, `organizer`, or `judge`). Admin accounts are promoted via system procedures.
+- **User Profile Studio** (`/profile`): Users can edit their bio, skills list, GitHub/LinkedIn links, portfolio URL, update their avatar, and change passwords.
 
 ---
 
-## ⚙️ Quick Start Guide
+### 🛡️ B. Administrator Suite (`/admin`)
+Designed for platform owners to audit operations, monitor platform health, and enforce community standards.
 
-### 1. Environment Setup
-Create a `.env` file in the `server` directory based on `server/.env.example`:
+1. **Admin Dashboard & Analytics** (`/admin`, `/admin/analytics`):
+   - Overview metrics: Total Users, Total Hackathons, Total Teams, Total Submissions, Total Registrations.
+   - Interactive Recharts visual graphs:
+     - User Distribution by Role (Bar chart).
+     - Hackathon Distribution by Mode & Status.
+   - Recent Registrations audit feed.
+2. **User Management** (`/admin/users`, `/admin/organizers`, `/admin/judges`, `/admin/participants`):
+   - Full tabular directory with role-filtered views.
+   - Capability to toggle account status (`Active` / `Blocked`) and permanently delete accounts.
+3. **Hackathons & Teams Oversight** (`/admin/hackathons`, `/admin/teams`):
+   - Administrative power to inspect and remove any hackathon or team on the platform.
 
-```env
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-MONGO_URI=mongodb+srv://<user>:<password>@cluster0.mongodb.net/hacklytics?retryWrites=true&w=majority
-JWT_SECRET=your_super_secret_jwt_key
-JWT_EXPIRE=7d
+---
 
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+### 🎪 C. Organizer Suite (`/organizer`)
+Designed for hackathon hosts, universities, and organizations.
 
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_password
+1. **Organizer Dashboard** (`/organizer`):
+   - Summary cards of organized hackathons, team applications, submitted projects, and assigned judges.
+   - Quick action shortcuts to create hackathons and review applications.
+2. **Hackathon Studio / Creation Wizard** (`/organizer/create-hackathon`):
+   - Form for title, tagline, description, mode (`Online`, `Offline`, `Hybrid`), venue/location, registration deadline, start/end dates, team size limits, and prize pool.
+   - Custom Judging Criteria Builder: Organizers define evaluation dimensions (e.g., *Innovation*, *Technical Complexity*, *UI/UX Design*, *Pitch*) and assign max points to each.
+3. **Hackathon Management Hub** (`/organizer/manage/:id`):
+   - **Registrations Tab**: View incoming team applications, inspect team member details, and approve or reject teams with custom rejection reasons (triggers email alerts).
+   - **Submissions Tab**: Inspect submitted projects, review GitHub links, live demos, and assign certified judges to evaluate specific projects.
+   - **Judges Tab**: Add/remove judges assigned to evaluate the hackathon.
+   - **Announce Winners Tab**: Publish evaluations and publicly crown 1st, 2nd, and 3rd place winners.
+
+---
+
+### 🚀 D. Participant Workspace (`/participant`)
+Designed for developers, designers, and hackers competing in hackathons.
+
+1. **Participant Dashboard** (`/participant`):
+   - Tracks registered hackathons, active team memberships, project submission status, and official results.
+2. **Hackathon Discovery Hub** (`/hackathons`, `/hackathons/:id`):
+   - Browse active, upcoming, and completed hackathons with mode filters and search.
+   - View details, criteria, prizes, schedule, and team size limits.
+3. **Team Management Studio** (`/participant/team`):
+   - Create a team or join an existing team via a unique Invite Code.
+   - Invite teammates by email/user ID.
+   - Accept or decline team invitations.
+   - Leadership controls: Transfer team leadership or leave team.
+4. **Project Submission Studio** (`/participant/submission`):
+   - Form to submit Project Name, Tagline, Problem Statement, Detailed Solution Description, Tech Stack tags, GitHub Repository link, Live Demo URL, Video Demo URL, and screenshot attachments.
+   - Edit submissions before the deadline expires.
+5. **Results & Feedback View** (`/participant/results`):
+   - View final evaluation scores and written feedback notes from judges once announced.
+
+---
+
+### ⚖️ E. Judge Suite (`/judge`)
+Designed for mentors and industry experts evaluating hackathon projects.
+
+1. **Judge Dashboard** (`/judge`):
+   - Metrics showing assigned projects, pending evaluations, and completed evaluations.
+2. **Project Reviewing Interface** (`/judge/review/:submissionId`):
+   - Detailed project view: Read problem statement, solution description, tech stack, open GitHub repo, and watch demo videos.
+   - **Criterion Scoring Sliders**: Real-time range sliders with progress bars for each custom evaluation dimension defined by the organizer.
+   - Overall written feedback & recommendation notes.
+3. **Completed Reviews** (`/judge/completed`):
+   - History of all completed evaluations with ability to edit scores before the evaluation period closes.
+
+---
+
+### 🏆 F. Live Public Leaderboard (`/leaderboard`)
+- **Real-Time Aggregation Pipeline**: Uses MongoDB aggregation pipelines to calculate the average score for each project across all evaluating judges.
+- **Top 3 Podium Display**: Interactive podium cards highlighting 1st Place (Gold), 2nd Place (Silver), and 3rd Place (Bronze) with project links and score points.
+- **Full Rankings Table**: Searchable, filterable leaderboard listing all teams ranked by score.
+
+---
+
+### 💬 G. Global Group Chat Drawer
+- **Persistent Header Button**: Accessible from the navbar across all pages for authenticated users.
+- **Unread Badge Counter**: Bouncing badge indicator highlighting new unread messages.
+- **Role & Team Identification**: Messages display color-coded role tags (`[ADMIN]`, `[ORGANIZER]`, `[JUDGE]`, `[PARTICIPANT]`) and participant team names.
+- **Auto-Scroll & Polling**: Periodically fetches updates while open and auto-scrolls to new messages.
+
+---
+
+## 🗄️ 4. Data Models & Database Schemas
+
+```
+┌──────────────┐         ┌─────────────────┐         ┌──────────────┐
+│     User     │◄───────┤    Hackathon    ├────────►│     Team     │
+└──────┬───────┘         └────────┬────────┘         └──────┬───────┘
+       │                          │                         │
+       │                 ┌────────┴────────┐                │
+       └────────────────►│  Registration   │◄───────────────┘
+                         └─────────────────┘
+                                  │
+                         ┌────────┴────────┐
+                         │   Submission    │
+                         └────────┬────────┘
+                                  │
+                         ┌────────┴────────┐
+                         │     Review      │
+                         └─────────────────┘
 ```
 
-### 2. Installation
-From the root directory:
+1. **User**: `name`, `email`, `password`, `role` (`admin`/`organizer`/`participant`/`judge`), `avatar`, `bio`, `skills`, `github`, `linkedin`, `portfolio`, `isBlocked`.
+2. **Hackathon**: `title`, `tagline`, `description`, `banner`, `mode` (`online`/`offline`/`hybrid`), `venue`, `startDate`, `endDate`, `registrationDeadline`, `minTeamSize`, `maxTeamSize`, `prizePool`, `criteria` `[{ name, maxPoints }]`, `status` (`draft`/`open`/`in_progress`/`under_review`/`completed`), `organizer` (ref `User`), `judges` (array of ref `User`), `winners` `[{ rank, team, submission }]`.
+3. **Team**: `name`, `leader` (ref `User`), `members` (array of ref `User`), `hackathon` (ref `Hackathon`), `inviteCode`.
+4. **Registration**: `team` (ref `Team`), `hackathon` (ref `Hackathon`), `status` (`pending`/`approved`/`rejected`), `rejectionReason`, `registeredAt`.
+5. **Submission**: `team` (ref `Team`), `hackathon` (ref `Hackathon`), `projectName`, `tagline`, `problemStatement`, `solutionDescription`, `techStack` `[String]`, `githubRepo`, `liveDemoUrl`, `videoUrl`, `attachments` `[String]`, `status` (`submitted`/`under_review`/`evaluated`/`winner`).
+6. **Review**: `judge` (ref `User`), `submission` (ref `Submission`), `hackathon` (ref `Hackathon`), `scores` `[{ criterionName, score, maxPoints }]`, `totalScore`, `comments`, `completedAt`.
+7. **Message**: `sender` (ref `User`), `content`, `senderRole`, `senderName`, `teamName`, `createdAt`.
+
+---
+
+## 🎨 5. Design System & Aesthetics
+
+- **Theme Palette**: Pure white background (`#ffffff`), pitch black text (`#09090b`), light grey surfaces (`#f4f4f5`), and indigo/purple accents.
+- **Brutalist Sharp Edges**: All buttons, inputs, cards, and modals use zero border radius (`border-radius: 0 !important`) for a crisp SaaS look.
+- **Bold Offset Shadows**: Buttons and cards use hard pixel drop-shadows (`box-shadow: 3px 3px 0px #000000`).
+- **Responsive Layout**:
+  - Full support for desktop, tablet, and mobile screens.
+  - Off-canvas slide-out navigation drawer on mobile with background blur backdrop.
+  - Horizontal scroll wrappers (`overflow-x-auto`) for all data tables.
+
+---
+
+## 📡 6. Complete API Endpoint Reference
+
+| Method | Endpoint | Description | Auth Required | Roles |
+|---|---|---|---|---|
+| **POST** | `/api/auth/register` | Register new account | No | All |
+| **POST** | `/api/auth/login` | User login | No | All |
+| **GET** | `/api/auth/me` | Get active user profile | Yes | All |
+| **POST** | `/api/auth/logout` | Clear auth cookies | Yes | All |
+| **GET** | `/api/users` | Get all users list | Yes | Admin |
+| **PATCH**| `/api/users/:id/toggle-block` | Block/unblock account | Yes | Admin |
+| **DELETE**| `/api/users/:id` | Delete user account | Yes | Admin |
+| **GET** | `/api/hackathons` | Public hackathons directory | No | All |
+| **GET** | `/api/hackathons/:id` | Hackathon details | No | All |
+| **POST** | `/api/hackathons` | Create new hackathon | Yes | Organizer/Admin |
+| **PUT** | `/api/hackathons/:id` | Update hackathon | Yes | Organizer/Admin |
+| **POST** | `/api/hackathons/:id/judges` | Assign judge to hackathon | Yes | Organizer/Admin |
+| **POST** | `/api/hackathons/:id/announce-winners` | Publish winners | Yes | Organizer/Admin |
+| **POST** | `/api/teams` | Create a team | Yes | Participant |
+| **POST** | `/api/teams/join` | Join team via invite code | Yes | Participant |
+| **GET** | `/api/teams/my-team` | Get user's active team | Yes | Participant |
+| **POST** | `/api/registrations` | Register team for hackathon | Yes | Participant |
+| **PATCH**| `/api/registrations/:id/status` | Approve/Reject application | Yes | Organizer/Admin |
+| **POST** | `/api/submissions` | Submit project | Yes | Participant |
+| **GET** | `/api/submissions/hackathon/:id` | Get hackathon submissions | Yes | Organizer/Judge/Admin |
+| **POST** | `/api/reviews` | Submit project evaluation | Yes | Judge |
+| **GET** | `/api/leaderboard/:hackathonId` | Get live rankings | No | All |
+| **GET** | `/api/messages` | Get global group chat | Yes | All |
+| **POST** | `/api/messages` | Send message in chat | Yes | All |
+
+---
+
+## ⚡ 7. Project Execution Commands
 
 ```bash
-# Install server dependencies
-npm install
-
-# Install client dependencies
-cd client
-npm install
-cd ..
-```
-
-### 3. Running Locally
-Run backend and frontend concurrently:
-
-```bash
-# Start backend server (Port 5000)
+# Start Backend Express API (Port 5001)
 npm run dev
 
-# Start frontend dev server in client directory (Port 5173)
+# Start Frontend Vite Dev Server (Port 5174)
 npm run dev:client
-```
 
----
-
-## 🧪 Verification & Build
-To build the frontend production bundle:
-
-```bash
-cd client
-npm run build
+# Production Build Verification
+cd client && npm run build
 ```
