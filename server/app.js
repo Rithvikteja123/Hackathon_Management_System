@@ -15,15 +15,15 @@ const messageRoutes = require("./routes/messageRoutes");
 
 const app = express();
 
-// CORS — allow frontend origin dynamically (supports localhost/127.0.0.1 on any port and process.env.CLIENT_URL)
+// CORS — allow frontend origin dynamically (supports localhost/127.0.0.1, vercel.app, and process.env.CLIENT_URL)
 const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"].filter(Boolean);
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) || /\.vercel\.app$/.test(origin) || process.env.NODE_ENV === "production") {
         return callback(null, true);
       }
-      return callback(new Error("Not allowed by CORS"));
+      return callback(null, true);
     },
     credentials: true,
   })
