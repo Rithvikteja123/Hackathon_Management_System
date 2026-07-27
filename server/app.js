@@ -15,19 +15,33 @@ const messageRoutes = require("./routes/messageRoutes");
 
 const app = express();
 
-// CORS — allow frontend origin dynamically (supports localhost/127.0.0.1, vercel.app, and process.env.CLIENT_URL)
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"].filter(Boolean);
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) || /\.vercel\.app$/.test(origin) || process.env.NODE_ENV === "production") {
-        return callback(null, true);
-      }
-      return callback(null, true);
-    },
-    credentials: true,
-  })
-);
+// Custom CORS middleware to guarantee headers on Vercel serverless deployments
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"].filter(Boolean);
+  
+  if (origin) {
+    if (
+      allowedOrigins.includes(origin) ||
+      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+      /\.vercel\.app$/.test(origin) ||
+      process.env.NODE_ENV === "production"
+    ) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie, X-Requested-With");
+  
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+  next();
+});
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
