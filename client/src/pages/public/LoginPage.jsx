@@ -99,7 +99,7 @@ const LoginPage = () => {
             <div className="w-7 h-7 rounded-lg bg-black flex items-center justify-center">
               <RiRocketLine className="text-white text-base font-bold" />
             </div>
-            <span className="font-extrabold text-lg text-black">Hack<span className="text-zinc-500">lytics</span></span>
+            <span className="font-extrabold text-lg text-black">Co<span className="text-zinc-400 font-extrabold">Build</span></span>
           </div>
 
           <div className="mb-4 flex items-center justify-between">

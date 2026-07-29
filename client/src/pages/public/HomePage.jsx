@@ -83,7 +83,7 @@ const roleShowcase = {
     preview: {
       teamName: "Neural Hackers",
       status: "Approved & Submitted",
-      project: "Hacklytics AI Agent",
+      project: "CoBuild AI Agent",
       tech: ["React", "Express", "MongoDB", "Cloudinary"],
       score: "94.5 / 100",
     },
@@ -147,8 +147,8 @@ const roleShowcase = {
 
 const faqs = [
   {
-    q: "How does Hacklytics compute final leaderboard rankings?",
-    a: "Hacklytics uses a MongoDB aggregation pipeline to compute the arithmetic average of total scores assigned across all judges who reviewed a specific submission. This ensures fairness even when multiple judges evaluate the same team.",
+    q: "How does CoBuild compute final leaderboard rankings?",
+    a: "CoBuild uses a MongoDB aggregation pipeline to compute the arithmetic average of total scores assigned across all judges who reviewed a specific submission. This ensures fairness even when multiple judges evaluate the same team.",
   },
   {
     q: "Can team leaders transfer leadership or remove inactive members?",
@@ -346,7 +346,7 @@ const HomePage = () => {
             <div className="section-tag mx-auto mb-4">Tailored Workflows</div>
             <h2 className="section-title">4 Roles. 1 Platform.</h2>
             <p className="section-subtitle mx-auto">
-              Select a role to see how Hacklytics streamlines tasks for every stakeholder.
+              Select a role to see how CoBuild streamlines tasks for every stakeholder.
             </p>
           </div>
 
@@ -495,7 +495,7 @@ const HomePage = () => {
               <div className="relative z-10 w-full">
                 <RiTrophyLine className="text-2.5xl text-black mx-auto mb-2" />
                 <h3 className="text-lg font-bold text-black tracking-tight mb-1.5">
-                  Ready to Experience Hacklytics?
+                  Ready to Experience CoBuild?
                 </h3>
                 <p className="text-zinc-600 text-xs max-w-xs mx-auto mb-5 leading-relaxed">
                   Build your team, launch a hackathon, or start judging projects today.

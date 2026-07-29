@@ -11,7 +11,7 @@ export const ChatProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const getStorageKey = useCallback(() => {
-    return user ? `hacklytics_chat_last_seen_${user._id}` : "hacklytics_chat_last_seen";
+    return user ? `cobuild_chat_last_seen_${user._id}` : "cobuild_chat_last_seen";
   }, [user]);
 
   // Fetch messages and compute unread count
